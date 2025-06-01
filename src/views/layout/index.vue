@@ -20,12 +20,17 @@ import { Avatar, Document, Histogram, HomeFilled, InfoFilled, Menu, Promotion, S
       </el-header>
 
       <el-container>
-        <!--左側菜單-->
         <el-aside width="200px" class="aside">
-          <el-menu>
-            <el-menu-item index="/index">
-              <el-icon><Promotion /></el-icon>首頁
-            </el-menu-item>
+          
+          <!--左側菜單-->
+          <el-menu router>
+            <!--首頁菜單-->
+
+              <el-menu-item index="/index">
+                <el-icon><Promotion /></el-icon>首頁
+              </el-menu-item>
+
+            
 
             <!--班級管理菜單-->
             <el-sub-menu index="/manage">
@@ -76,6 +81,7 @@ body,
   padding: 0px;
 }
 
+
 *,
 *::before,
 *::after {
@@ -103,6 +109,7 @@ body,
   justify-content: space-between; /* 将标题推到左边，工具栏推到右边 */
   align-items: center; /* 垂直居中头部内容 */
   padding: 0 20px;
+
 }
 
 .title {
@@ -111,6 +118,7 @@ body,
   font-family: "楷体", KaiTi, serif; /* 增加了 'KaiTi' 作为备选，以及通用衬线字体 */
   line-height: 60px; /* 匹配头部高度，用于文本块的垂直对齐 */
   font-weight: bolder;
+
 }
 
 .right_tool {
@@ -131,6 +139,11 @@ body,
   margin-right: 5px; /* 图标和其文字之间的间距 */
   /* 图标默认会继承颜色和字体大小，或者您可以明确设置 */
   /* 例如：font-size: 18px; 如果您希望图标比文字稍大 */
+}
+
+.el-menu a {
+  text-decoration: none;
+  color: inherit;
 }
 
 .aside {
