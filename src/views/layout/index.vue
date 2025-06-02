@@ -8,7 +8,7 @@ import { Avatar, Document, Histogram, HomeFilled, InfoFilled, Menu, Promotion, S
   <div class="common-layout">
     <el-container>
       <el-header class="header">
-        <span class="title">呱呱課程輔助系統</span>
+        <span class="title">嚕嚕課程輔助系統</span>
         <span class="right_tool">
           <a href="">
             <el-icon><EditPen /></el-icon> 修改密碼 &nbsp;&nbsp;&nbsp;&nbsp;|
@@ -63,7 +63,11 @@ import { Avatar, Document, Histogram, HomeFilled, InfoFilled, Menu, Promotion, S
             </el-sub-menu>
           </el-menu>
         </el-aside>
-        <el-main> 右側核心區域 </el-main>
+
+        <el-main> 
+          <router-view></router-view> 
+        </el-main>
+
       </el-container>
     </el-container>
   </div>
