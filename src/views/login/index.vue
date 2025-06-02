@@ -32,7 +32,7 @@ const handleReset = () => {
 <template>
   <div class="login-container">
     <el-card class="login-card">
-      <div class="title">登入系統</div>
+      <div class="title">登入喔喔喔</div>
 
       <el-form @submit.prevent="handleLogin" label-width="60px" ref="loginForm" class="login-form">
         <el-form-item label="帳號" class="form-item">
@@ -87,7 +87,7 @@ const handleReset = () => {
 
 .title {
   
-   font-size: 24px;
+   font-size: 32px;
   font-weight: bold;
   text-align: center;
   margin-bottom: 30px;  /* 保持標題和表單間距 */
