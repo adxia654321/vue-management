@@ -126,11 +126,11 @@ body,
 
 .header {
   background-image: linear-gradient(to right,
-      #00547d,
-      #007fa4,
-      #00aaa0,
-      #00d072,
-      #a8eb12);
+    #00547d,
+    #007fa4,
+    #00aaa0,
+    #00d072,
+    #a8eb12);
   /* Element Plus el-header 默认高度是 60px，这与图片效果很匹配 */
   /* 使用flex布局来排列标题和右侧工具栏 */
   display: flex;
