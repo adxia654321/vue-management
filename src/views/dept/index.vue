@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { queryAllApi, addApi } from '@/api/dept';
-import { ElMessage } from 'element-plus';
+import { queryAllApi, addApi, queryByIdApi, updateApi, deleteByIdApi } from '@/api/dept';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 
 // 生命週期函數
@@ -43,24 +43,31 @@ const save = async () => {
     if(!deptFormRef.value) return;
 
     deptFormRef.value.validate(async (valid) =>{  // valid 表示是否驗證通過 true通過 false不通過
-        if(valid){
-            const result = await addApi(dept.value);
-            if(result.code){
-            // 提示信息
-            ElMessage.success('操作成功');
-            // 關閉對話框
-            dialogFormVisible.value = false;
-            //重新查詢列表
-            search();
-            } else {
-                ElMessage.error(result.msg);
-            }
-        }else{  // 驗證不通過
-            ElMessage.error('請檢查名稱是否符合規定');
+      if(valid){
+
+      let result;
+            
+      if(dept.value.id){
+        result = await updateApi(dept.value);
+      } else {
+        result = await addApi(dept.value);
+      }
+
+        if(result.code){
+        // 提示信息
+        ElMessage.success('操作成功');
+        // 關閉對話框
+        dialogFormVisible.value = false;
+        //重新查詢列表
+        search();
+        } else {
+            ElMessage.error(result.msg);
         }
-   
-    })
-    
+    }else{  // 驗證不通過
+              ElMessage.error('請檢查名稱是否符合規定');
+      }   
+    }
+)
 }
 
 
@@ -73,6 +80,49 @@ const rules = ref({
 })
 
 const deptFormRef = ref();
+
+
+// 按修改時 需要回顯資料
+const edit = async (id) => {
+  formTitle.value = '修改部門';
+  // 重置表單驗證規則-提示訊息
+  if (deptFormRef.value) {
+    deptFormRef.value.resetFields()
+  }
+
+  const result = await queryByIdApi(id);
+  if(result.code){
+    dialogFormVisible.value = true;
+    dept.value = result.data;
+  }
+}
+
+// 刪除部門
+const delById = async (id) => {
+  // 彈出確認框
+   ElMessageBox.confirm(
+    '你確定要刪除此部門嗎?',
+    '提示',
+    {
+      confirmButtonText: '確定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }
+  )
+    .then(async () => {
+      const result = await deleteByIdApi(id);
+      if(result.code){
+        ElMessage.success('刪除成功');
+        search();
+      }else{
+        ElMessage.error(result.msg);
+      }
+
+    })
+    .catch(() => {
+     ElMessage.info('取消刪除')
+    })
+}
 
 
 </script>
@@ -91,17 +141,16 @@ const deptFormRef = ref();
             <el-table-column prop="updateTime" label="最後操作時間" width="300" align="center"/>
             <el-table-column label="操作" align="center">
                 <template #default="scope" >
-                    <el-button type="primary" size="small"><el-icon><EditPen /></el-icon>
+                    <el-button type="primary" size="small" @click="edit(scope.row.id)"><el-icon><EditPen /></el-icon>
                         編輯
                     </el-button>
-                    <el-button type="danger" size="small"><el-icon><Delete /></el-icon>
+                    <el-button type="danger" size="small" @click="delById(scope.row.id)"><el-icon><Delete /></el-icon>
                         刪除
                     </el-button>
                 </template>
             </el-table-column>
         </el-table>
     </div>
-
 
     <!-- 對話框 -->
      <el-dialog v-model="dialogFormVisible" :title="formTitle" width="500">
