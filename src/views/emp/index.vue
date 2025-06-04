@@ -1,5 +1,6 @@
 <script setup>
 import { ref, watch } from "vue";
+import { queryPageApi } from "@/api/emp";
 
 
 // 搜索表單
@@ -24,8 +25,13 @@ watch(() => searchEmp.value.date, (newVal, oldVal) => {
 
 
 // 查詢員工列表
-const search = () => {
-    console.log(searchEmp.value)
+const search = async () => {
+    const result = await queryPageApi(searchEmp.value.name,
+                                      searchEmp.value.gender,
+                                      searchEmp.value.begin,
+                                      searchEmp.value.end,
+                                      currentPage.value,
+                                      pageSize.value);
 }
 
 // 清空
@@ -52,6 +58,22 @@ const empList = ref([
     }
 ])
 
+
+// 分頁
+const currentPage = ref(1)
+const pageSize = ref(10)
+const background = ref(true)
+const total = ref(0);
+
+// 每頁展示的紀錄數變化
+const handleSizeChange = (val) => {
+  console.log(`每頁展示${val}條紀錄`)
+}
+
+// 頁面變化時觸發
+const handleCurrentChange = (val) => {
+  console.log(`當前頁碼: ${val}`)
+}
 
 </script>
 
@@ -92,10 +114,12 @@ const empList = ref([
  </div>
 
  <!-- 功能按鈕 -->
- <div class="container">
-    <el-button type="primary" @click="">+ 新增員工</el-button>
-    <el-button type="danger" @click="">- 批量刪除</el-button>
- </div>
+<div class="container">
+   <el-button type="primary" @click="">+ 新增員工</el-button>
+   <el-button type="danger" @click="">- 批量刪除</el-button>
+</div>
+
+
 
  <!-- 表格 -->
 <div class="container">
@@ -126,7 +150,7 @@ const empList = ref([
     <el-table-column prop="entryDate" label="入職日期" width="200" align="center"/>
     <el-table-column prop="updateTime" label="最後操作時間" width="200" align="center"/>
     <el-table-column label="操作" width="180" >
-        <template #default="scope" align="center">
+        <template #default="scope" >
             <el-button type="primary" size="small" @click=""><el-icon><EditPen /></el-icon>
                 編輯
             </el-button>
@@ -139,6 +163,22 @@ const empList = ref([
 </div>
 
 
+
+ <!-- 數據展示表格 -->
+<div class="container">
+
+<el-pagination
+    v-model:current-page="currentPage"
+    v-model:page-size="pageSize"
+    :page-sizes="[5, 10, 20, 30, 50, 75, 100]"
+    :background="background"
+    layout="total, sizes, prev, pager, next, jumper"
+    :total="total"
+    @size-change="handleSizeChange"
+    @current-change="handleCurrentChange"
+/>
+
+</div>
 
 </template>
 

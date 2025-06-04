@@ -107,10 +107,10 @@ body,
 /* 假设 #app 是您Vue应用的根元素 */
 .common-layout {
   height: 100%;
-  margin: 0px;
-  padding: 0px;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
 }
-
 
 *,
 *::before,
@@ -118,76 +118,89 @@ body,
   box-sizing: inherit;
 }
 
-
-/* 使根 el-container 填满 .common-layout */
-.common-layout>.el-container {
+/* 1. 第一层 el-container（包 header + 第二层）要撑满 100% */
+.common-layout > .el-container {
+  display: flex;
+  flex-direction: column;
   height: 100%;
 }
 
+/* 2. 第二层 el-container（包 aside + main），高度 = 100% - header(60px) */
+.common-layout > .el-container > .el-container {
+  display: flex;
+  /* 如果 el-header 的实际高度不是 60px，请改成对应数值 */
+  height: calc(100% - 60px);
+}
+
+/* 3. 让 el-aside（和你给它的 .aside）撑满父容器 */
+.el-aside,
+.aside {
+  height: 100%;
+  /* 如果需要分隔线，可以取消注释下面一行 */
+  /* border-right: 1px solid #e0e0e0; */
+}
+
+/* 4. 让 el-menu 填满 el-aside，这样菜单整个高度都被撑开 */
+.el-menu {
+  height: 100%;
+}
+
+/* 5. el-menu 内部链接保持原有样式 */
+.el-menu a {
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+}
+
+/* 6. 头部样式保持不变 */
 .header {
-  background-image: linear-gradient(to right,
+  background-image: linear-gradient(
+    to right,
     #00547d,
     #007fa4,
     #00aaa0,
     #00d072,
-    #a8eb12);
-  /* Element Plus el-header 默认高度是 60px，这与图片效果很匹配 */
-  /* 使用flex布局来排列标题和右侧工具栏 */
+    #a8eb12
+  );
+  /* Element Plus el-header 默认高度是 60px，这与背景图匹配 */
   display: flex;
   justify-content: space-between;
-  /* 将标题推到左边，工具栏推到右边 */
   align-items: center;
-  /* 垂直居中头部内容 */
   padding: 0 20px;
-
 }
 
+/* 标题文字 */
 .title {
   color: white;
   font-size: 40px;
   font-family: "楷体", KaiTi, serif;
-  /* 增加了 'KaiTi' 作为备选，以及通用衬线字体 */
   line-height: 60px;
-  /* 匹配头部高度，用于文本块的垂直对齐 */
   font-weight: bolder;
-  font-family: 'DFKai-SB', "KaiTi", cursive, serif;
-
+  font-family: "DFKai-SB", "KaiTi", cursive, serif;
 }
 
+/* 右侧工具区 */
 .right_tool {
   display: flex;
-  /* 如果内部结构更复杂，可以使项目在一行内对齐 */
   align-items: center;
-  /* 垂直居中此span内的项目 */
 }
 
 .right_tool a {
   color: white;
   text-decoration: none;
-  /* 去除链接下划线 */
   margin-left: 20px;
-  /* “修改密码” 和 “退出登录” 链接之间的间距 */
   display: inline-flex;
-  /* 使图标和文字良好对齐 */
   align-items: center;
-  /* 垂直居中链接内的图标和文字 */
   font-size: 16px;
-  /* 调整了链接的字体大小，使其比标题小 */
 }
 
 .right_tool a .el-icon {
   margin-right: 5px;
-  /* 图标和其文字之间的间距 */
-  /* 图标默认会继承颜色和字体大小，或者您可以明确设置 */
-  /* 例如：font-size: 18px; 如果您希望图标比文字稍大 */
 }
 
-.el-menu a {
-  text-decoration: none;
-  color: inherit;
+/* Main 区域（如果需要额外样式在此添加） */
+.el-main {
+  /* 例如：background-color 或 padding 等 */
 }
 
-.aside {}
-
-.el-main {}
 </style>
