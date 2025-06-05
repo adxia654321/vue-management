@@ -154,14 +154,16 @@ body,
 
 /* 6. 头部样式保持不变 */
 .header {
-  background-image: linear-gradient(
+  background-color: #34495E;
+  /* background-image: linear-gradient(
     to right,
-    #00547d,
+    /* #00547d,
     #007fa4,
     #00aaa0,
     #00d072,
-    #a8eb12
-  );
+    #a8eb12 */
+
+  /* ); */ 
   /* Element Plus el-header 默认高度是 60px，这与背景图匹配 */
   display: flex;
   justify-content: space-between;

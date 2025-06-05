@@ -3,6 +3,23 @@ import { ref, watch, onMounted } from "vue";
 import { queryPageApi } from "@/api/emp";
 
 
+// 職位列表數據
+const jobs = ref([
+  { name: '斑導', value: 1 },
+  { name: '講師', value: 2 },
+  { name: '主任', value: 3 },
+  { name: '負責人', value: 4 },
+  { name: '諮詢師', value: 5 },
+  { name: '其他', value: 6 }
+]);
+
+// 性別列表數據
+const genders = ref([
+  { name: '男', value: 1 },
+  { name: '女', value: 2 }
+]);
+
+
 // 搜索表單
 const searchEmp = ref({
     name: '',
@@ -51,7 +68,7 @@ const empList = ref([])
 
 // 分頁
 const currentPage = ref(1)
-const pageSize = ref(10)
+const pageSize = ref(5)
 const background = ref(true)
 const total = ref(0);
 
@@ -238,8 +255,8 @@ const addEmp = () => {
       <el-col :span="12">
         <el-form-item label="性別">
           <el-select v-model="employee.gender" placeholder="請選擇性別" style="width: 100%;">
-            <el-option label="男" value="1"></el-option>
-            <el-option label="女" value="2"></el-option>
+            <el-option v-for="g in genders" :key="g.value" :label="g.name" :value="g.value"></el-option>
+            
           </el-select>
         </el-form-item>
       </el-col>
@@ -256,11 +273,8 @@ const addEmp = () => {
   <el-col :span="12">
     <el-form-item label="職位">
       <el-select v-model="employee.job" placeholder="請選擇職位" style="width: 100%;">
-        <el-option label="班導" value="1"></el-option>
-        <el-option label="講師" value="2"></el-option>
-        <el-option label="主任" value="3"></el-option>
-        <el-option label="負責人" value="4"></el-option>
-        <el-option label="諮詢師" value="5"></el-option>
+        <el-option v-for="j in jobs" :key="j.value" :label="j.name" :value="j.value"></el-option>
+        
       </el-select>
     </el-form-item>
   </el-col>
