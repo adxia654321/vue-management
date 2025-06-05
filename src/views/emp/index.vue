@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import { queryPageApi } from "@/api/emp";
 
 
@@ -23,6 +23,10 @@ watch(() => searchEmp.value.date, (newVal, oldVal) => {
     }
 })
 
+// 生命週期函數
+onMounted(() => {
+    search();
+})
 
 // 查詢員工列表
 const search = async () => {
@@ -31,7 +35,7 @@ const search = async () => {
                                       currentPage.value, pageSize.value);
     if(result.code){
         empList.value = result.data.rows;
-        total.value = result.data.totle;
+        total.value = result.data.total;
     }
 }
 
@@ -42,9 +46,7 @@ const clear = () => {
 }
 
 // 員工列表數據
-const empList = ref([
-    
-])
+const empList = ref([])
 
 
 // 分頁
@@ -55,13 +57,57 @@ const total = ref(0);
 
 // 每頁展示的紀錄數變化
 const handleSizeChange = (val) => {
-  console.log(`每頁展示${val}條紀錄`)
+
+  search(); 
 }
 
 // 頁面變化時觸發
 const handleCurrentChange = (val) => {
-  console.log(`當前頁碼: ${val}`)
+
+  search();
 }
+
+
+// 新增/修改表单
+const employee = ref({
+  username: '',
+  name: '',
+  gender: '',
+  phone: '',
+  job: '',
+  salary: '',
+  deptId: '',
+  entryDate: '',
+  image: '',
+  exprList: []
+})
+
+// 控制彈窗
+const dialogVisible = ref(false)
+const dialogTitle = ref('新增員工')
+
+// 文件上傳
+// 圖片上傳成功後觸發
+const handleAvatarSuccess = (response) => {
+  console.log(response);
+}
+
+// 文件上傳之前觸發
+const beforeAvatarUpload = (rawFile) => {
+  if (rawFile.type !== 'image/jpeg' && rawFile.type !== 'image/png') {
+    ElMessage.error('只支持上傳圖片')
+    return false
+  } else if (rawFile.size / 1024 / 1024 > 10) {
+    ElMessage.error('只能上傳10M以內的圖片')
+    return false
+  }
+  return true
+}
+
+const addEmp = () => {
+    dialogVisible.value = true;
+    dialogTitle.value = '新增員工';
+} 
 
 </script>
 
@@ -103,10 +149,9 @@ const handleCurrentChange = (val) => {
 
  <!-- 功能按鈕 -->
 <div class="container">
-   <el-button type="primary" @click="">+ 新增員工</el-button>
+   <el-button type="primary" @click="addEmp">+ 新增員工</el-button>
    <el-button type="danger" @click="">- 批量刪除</el-button>
 </div>
-
 
 
  <!-- 表格 -->
@@ -151,7 +196,6 @@ const handleCurrentChange = (val) => {
 </div>
 
 
-
  <!-- 數據展示表格 -->
 <div class="container">
 
@@ -168,12 +212,190 @@ const handleCurrentChange = (val) => {
 
 </div>
 
+
+<!-- 新增和修改員工的對話框 -->
+<el-dialog v-model="dialogVisible" :title="dialogTitle">
+  <el-form :model="employee" label-width="80px">
+
+    <!-- 基本信息 -->
+    <!-- 第一行 -->
+    <el-row :gutter="20">
+      <el-col :span="12">
+        <el-form-item label="用戶名">
+          <el-input v-model="employee.username" placeholder="請輸入員工用戶名，2-20個字"/>
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="12">
+        <el-form-item label="姓名">
+          <el-input v-model="employee.name" placeholder="請輸入員工用戶名，2-20個字"/>
+        </el-form-item>
+      </el-col>
+    </el-row>
+
+      <!-- 第二行 -->
+       <el-row :gutter="20">
+      <el-col :span="12">
+        <el-form-item label="性別">
+          <el-select v-model="employee.gender" placeholder="請選擇性別" style="width: 100%;">
+            <el-option label="男" value="1"></el-option>
+            <el-option label="女" value="2"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="12">
+        <el-form-item label="手機號">
+          <el-input v-model="employee.phone" placeholder="請輸入員工手機號"></el-input>
+        </el-form-item>
+      </el-col>
+    </el-row>
+
+    <!-- 第三行 -->
+    <el-row :gutter="20">
+  <el-col :span="12">
+    <el-form-item label="職位">
+      <el-select v-model="employee.job" placeholder="請選擇職位" style="width: 100%;">
+        <el-option label="班導" value="1"></el-option>
+        <el-option label="講師" value="2"></el-option>
+        <el-option label="主任" value="3"></el-option>
+        <el-option label="負責人" value="4"></el-option>
+        <el-option label="諮詢師" value="5"></el-option>
+      </el-select>
+    </el-form-item>
+  </el-col>
+
+  <el-col :span="12">
+    <el-form-item label="薪資">
+        <el-input v-model="employee.salary" placeholder="請輸入員工薪資"></el-input>
+    </el-form-item>
+    </el-col>
+  </el-row>
+
+  <!-- 第四行 -->
+   <el-row :gutter="20">
+  <el-col :span="12">
+    <el-form-item label="所屬部門">
+      <el-select v-model="employee.deptId" placeholder="請選擇部門" style="width: 100%;">
+        <el-option label="人事部" value="1"></el-option>
+        <el-option label="財務部" value="2"></el-option>
+      </el-select>
+    </el-form-item>
+  </el-col>
+
+  <el-col :span="12">
+  <el-form-item label="入職日期">
+    <el-date-picker v-model="employee.entrydate" type="date" style="width: 100%;" placeholder="選擇日期" format="yyyy-MM-dd"></el-date-picker>
+  </el-form-item>
+</el-col>
+</el-row>
+
+<!-- 第五行 -->
+<el-row :gutter="20">
+  <el-col :span="24">
+    <el-form-item label="頭像">
+      <el-upload
+        class="avatar-uploader"
+        action="/api/upload"
+        :show-file-list="false"
+        :on-success="handleAvatarSuccess"
+        :before-upload="beforeAvatarUpload"
+      >
+        <img v-if="employee.image" :src="employee.image" class="avatar" />
+        <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+      </el-upload>
+    </el-form-item>
+  </el-col>
+</el-row>
+
+<!-- 工作經歷 -->
+<!-- 第六行 -->
+<el-row :gutter="10">
+  <el-col :span="24">
+    <el-form-item label="工作经历">
+      <el-button type="success" size="small" @click="">+ 添加工作经历</el-button>
+    </el-form-item>
+  </el-col>
+</el-row>
+
+<!-- 第七行 .. 工作經歷-->
+<el-row :gutter="2">
+  <el-col :span="10">
+    <el-form-item size="small" label="時間" label-width="80px">
+      <el-date-picker type="daterange" range-separator="到" start-placeholder="開始日期" end-placeholder="結束日期" format="YYYY-MM-DD"></el-date-picker>
+    </el-form-item>
+  </el-col>
+
+  <el-col :span="6">
+    <el-form-item size="small" label="公司" label-width="60px">
+        <el-input placeholder="請輸入公司名稱"></el-input>
+    </el-form-item>
+  </el-col>
+
+  <el-col :span="6">
+  <el-form-item size="small" label="職位" label-width="60px">
+    <el-input placeholder="請輸入職位"></el-input>
+  </el-form-item>
+</el-col>
+
+<el-col :span="2">
+        <el-form-item size="small" label-width="0px">
+        <el-button type="danger"> - 删除</el-button>
+      </el-form-item>
+    </el-col>
+</el-row>
+ </el-form>
+
+ <!-- 底部按鈕 -->
+ <template #footer>
+  <span class="dialog-footer">
+    <el-button @click="dialogVisible = false">取消</el-button>
+    <el-button type="primary" @click="">保存</el-button>
+  </span>
+  </template>
+</el-dialog>
+
+
 </template>
 
 <style scoped>
 
 .container{
     margin: 12px 0px;
+}
+
+.avatar {
+  height: 40px;
+}
+
+.avatar-uploader .avatar {
+  width: 78px;
+  height: 78px;
+  display: block;
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed var(--el-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: var(--el-color-primary);
+}
+
+.el-icon.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 78px;
+  height: 78px;
+  text-align: center;
+  border-radius: 10px;
+  /* 添加灰色虛線邊框 */
+  border: 1px dashed var(--el-border-color);
 }
 
 </style>
