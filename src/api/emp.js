@@ -1,9 +1,9 @@
-import { request } from "@/utils/request";
+import  request  from "@/utils/request";
 
 
 // 查詢員工
 export const queryPageApi = (name, gender, begin, end, page, pageSize) => {
-    request.get(`/emps?name=${name}&gender=${gender}&begin=${begin}&end=${end}&page=${page}&pageSize=${pageSize}`)
+   return request.get(`/emps?name=${name}&gender=${gender}&begin=${begin}&end=${end}&page=${page}&pageSize=${pageSize}`)
 }
 
 

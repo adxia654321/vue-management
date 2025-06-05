@@ -26,12 +26,13 @@ watch(() => searchEmp.value.date, (newVal, oldVal) => {
 
 // 查詢員工列表
 const search = async () => {
-    const result = await queryPageApi(searchEmp.value.name,
-                                      searchEmp.value.gender,
-                                      searchEmp.value.begin,
-                                      searchEmp.value.end,
-                                      currentPage.value,
-                                      pageSize.value);
+    const result = await queryPageApi(searchEmp.value.name, searchEmp.value.gender,
+                                      searchEmp.value.begin, searchEmp.value.end,
+                                      currentPage.value, pageSize.value);
+    if(result.code){
+        empList.value = result.data.rows;
+        total.value = result.data.totle;
+    }
 }
 
 // 清空
@@ -42,20 +43,7 @@ const clear = () => {
 
 // 員工列表數據
 const empList = ref([
-    {
-        "id": 1,
-        "username": "jinyong",
-        "name": "金庸",
-        "gender": 1,
-        "image": "https://web-framework.oss-cn-hangzhou.aliyuncs.com/2022-09-02-00-27-53B.jpg",
-        "job": 2,
-        "salary": 6000,
-        "entryDate": "2015-01-01",
-        "deptId": 2,
-        "deptName": "教研部",
-        "createTime": "2022-09-01T23:06:30",
-        "updateTime": "2022-09-02T00:29:04"
-    }
+    
 ])
 
 
