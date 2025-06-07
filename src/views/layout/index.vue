@@ -7,7 +7,7 @@ import { Avatar, Document, Histogram, HomeFilled, InfoFilled, Menu, Promotion, S
   <div class="common-layout">
     <el-container>
       <el-header class="header">
-        <span class="title">嚕嚕課程輔助系統</span>
+        <span class="title">嚕嚕課程管理系統</span>
         <span class="right_tool">
           <a href="">
             <el-icon>

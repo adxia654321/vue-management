@@ -8,7 +8,9 @@ export const queryPageApi = (name, gender, begin, end, page, pageSize) => {
 
 
 // 新增
-
+export const addApi = (emp) => {
+    return request.post('/emps', emp);
+} 
 
 
 // 根據id查詢
