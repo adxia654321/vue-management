@@ -16,22 +16,26 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/', 
-     name: '',
-     component: LayoutView,
-     children: [
-    {path: 'index',  name: 'index',  component: IndexView},
-    {path: 'clazz',  name: 'clazz',  component: ClazzView},
-    {path: 'stu',  name: 'stu',  component: StuView},
-    {path: 'dept',  name: 'dept',  component: DeptView},
-    {path: 'emp',  name: 'emp',  component: EmpView},
-    {path: 'log',  name: 'log',  component: LogView},
-    {path: 'empReport',  name: 'empReport',  component: EmpReportView},
-    {path: 'stuReport',  name: 'stuReport',  component: StuReportView}
-     ]
+      path: '/',
+      redirect: '/index', // ✅ 加這行：預設轉到 /index
     },
-    {path: '/login',  name: 'login',  component: LoginView}
+    {
+      path: '/',
+      component: LayoutView,
+      children: [
+        { path: 'index', name: 'index', component: IndexView },
+        { path: 'clazz', name: 'clazz', component: ClazzView },
+        { path: 'stu', name: 'stu', component: StuView },
+        { path: 'dept', name: 'dept', component: DeptView },
+        { path: 'emp', name: 'emp', component: EmpView },
+        { path: 'log', name: 'log', component: LogView },
+        { path: 'empReport', name: 'empReport', component: EmpReportView },
+        { path: 'stuReport', name: 'stuReport', component: StuReportView }
+      ]
+    },
+    { path: '/login', name: 'login', component: LoginView }
   ]
 })
+
 
 export default router

@@ -12,8 +12,8 @@ export const addApi = (emp) => {
     return request.post('/emps', emp);
 } 
 
-
 // 根據id查詢
+export const queryInfoApi = (id) => request.get(`/emps/${id}`);
 
 
 // 修改

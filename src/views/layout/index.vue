@@ -1,6 +1,17 @@
 <script setup>
 import { Avatar, Document, Histogram, HomeFilled, InfoFilled, Menu, Promotion, Share, Tools } from '@element-plus/icons-vue';
 
+import { ref, onMounted } from 'vue'
+
+const isRouterViewVisible = ref(false)
+
+onMounted(() => {
+  setTimeout(() => {
+    isRouterViewVisible.value = true
+  }, 50) // 50ms 就夠，太長會延遲畫面顯示
+})
+
+
 </script>
 
 <template>
@@ -90,7 +101,9 @@ import { Avatar, Document, Histogram, HomeFilled, InfoFilled, Menu, Promotion, S
         </el-aside>
 
         <el-main>
-          <router-view></router-view>
+          <transition name="fade" mode="out-in">
+            <router-view v-if="isRouterViewVisible" />
+          </transition>
         </el-main>
 
       </el-container>
@@ -204,5 +217,19 @@ body,
 .el-main {
   /* 例如：background-color 或 padding 等 */
 }
+
+/* 路由切換動畫效果：淡入淡出 + 左右輕微位移 */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+  transform: translateX(10px);
+}
+.fade-enter-to, .fade-leave-from {
+  opacity: 1;
+  transform: translateX(0);
+}
+
 
 </style>

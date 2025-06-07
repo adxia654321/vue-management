@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch, onMounted } from "vue";
-import { queryPageApi, addApi } from "@/api/emp";
+import { queryPageApi, addApi, queryInfoApi } from "@/api/emp";
 import { queryAllApi as queryAllDeptApi } from "@/api/dept";
 import { ElMessage } from 'element-plus'
 
@@ -229,6 +229,26 @@ const rules = ref({
   ]
 });
 
+
+// 修改
+const edit = async (id) => {
+  const result = await queryInfoApi(id);
+  if(result.code){
+    dialogVisible.value = true;
+    dialogTitle.value = '修改員工';
+    employee.value = result.data;
+
+    // 對工作經歷進行處理
+    let exprList = employee.value.exprList;
+    if(exprList && exprList.length > 0){
+      exprList.forEach((expr) => {
+        expr.exprDate = [expr.begin, expr.end];
+      })
+    }
+
+  }
+}
+
 </script>
 
 
@@ -302,7 +322,7 @@ const rules = ref({
       <el-table-column prop="updateTime" label="最後操作時間" width="200" align="center" />
       <el-table-column label="操作" width="180">
         <template #default="scope">
-          <el-button type="primary" size="small" @click=""><el-icon>
+          <el-button type="primary" size="small" @click="edit(scope.row.id)"><el-icon>
               <EditPen />
             </el-icon>
             編輯
