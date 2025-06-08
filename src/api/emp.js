@@ -17,6 +17,10 @@ export const queryInfoApi = (id) => request.get(`/emps/${id}`);
 
 
 // 修改
+export const updateApi = (emp) => {
+    return request.put('/emps', emp);
+} 
 
 
 // 刪除
+export const deleteApi = (ids) => request.delete(`/emps?ids=${ids}`);

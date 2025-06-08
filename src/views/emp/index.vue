@@ -1,8 +1,8 @@
 <script setup>
 import { ref, watch, onMounted } from "vue";
-import { queryPageApi, addApi, queryInfoApi } from "@/api/emp";
+import { queryPageApi, addApi, queryInfoApi, updateApi, deleteApi } from "@/api/emp";
 import { queryAllApi as queryAllDeptApi } from "@/api/dept";
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 
 
@@ -154,9 +154,9 @@ const addEmp = () => {
     exprList: []
   }
   // 重置表單驗證規則-提示訊息 (再次點擊新增按鈕時候 不會跳出紅字提示名字規則)
-   if (empFormRef.value) {
-      empFormRef.value.resetFields()
-    }
+  if (empFormRef.value) {
+    empFormRef.value.resetFields()
+  }
 }
 
 // 添加工作經歷
@@ -185,9 +185,17 @@ const save = async () => {
   // 表單驗證
   if (!empFormRef.value) return;
 
-    empFormRef.value.validate(async (valid) => {  // valid 表示是否驗證通過 true通過 false不通過
+  empFormRef.value.validate(async (valid) => {  // valid 表示是否驗證通過 true通過 false不通過
     if (valid) {
-      const result = await addApi(employee.value);
+
+
+      let result;
+      if (employee.value.id) {   // 員工id存在 修改操作
+        result = await updateApi(employee.value);
+      } else {
+        result = await addApi(employee.value);  // 員工id不存在 新增操作
+      }
+
       if (result.code) {
         ElMessage.success('新增成功');
         dialogVisible.value = false;
@@ -233,20 +241,89 @@ const rules = ref({
 // 修改
 const edit = async (id) => {
   const result = await queryInfoApi(id);
-  if(result.code){
+  console.log(('result.data:', result.data));
+  if (result.code) {
     dialogVisible.value = true;
     dialogTitle.value = '修改員工';
     employee.value = result.data;
 
     // 對工作經歷進行處理
     let exprList = employee.value.exprList;
-    if(exprList && exprList.length > 0){
+    if (exprList && exprList.length > 0) {
       exprList.forEach((expr) => {
         expr.exprDate = [expr.begin, expr.end];
       })
     }
 
   }
+}
+
+
+// 刪除員工
+const deleteById = (id) => {
+  // 彈出確認框
+  ElMessageBox.confirm(
+    '你確定要刪除此員工嗎?',
+    '提示',
+    {
+      confirmButtonText: '確定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }
+  )
+    .then(async () => {
+      const result = await deleteApi(id);
+      if (result.code) {
+        ElMessage.success('刪除成功');
+        search();
+      } else {
+        ElMessage.error(result.msg);
+      }
+
+    })
+    .catch(() => {
+      ElMessage.info('取消刪除')
+    })
+}
+
+
+// 紀錄勾選的員工的id
+const selectedIds = ref([]);
+
+// 複選框勾選發生變化時觸發   selection是當前選中的元素(是一組陣列[])
+const handleSelectionChange = (selection) => {
+  selectedIds.value = selection.map(item => item.id);
+
+}
+
+// 批量刪除員工
+const deleteByIds = () => {
+  // 彈出確認框
+  ElMessageBox.confirm(
+    '你確定要刪除此員工嗎?',
+    '提示',
+    {
+      confirmButtonText: '確定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }
+  )
+    .then(async () => {
+      if (selectedIds.value && selectedIds.value.length > 0) {
+        const result = await deleteApi(selectedIds.value);
+        if (result.code) {
+          ElMessage.success('刪除成功');
+          search();
+        } else {
+          ElMessage.error(result.msg);
+        }
+      }else{
+        ElMessage.info('你並未選擇任何要刪除的員工');
+      }
+
+    }).catch(() => {
+      ElMessage.info('取消刪除')
+    })
 }
 
 </script>
@@ -288,13 +365,13 @@ const edit = async (id) => {
   <!-- 功能按鈕 -->
   <div class="container">
     <el-button type="primary" @click="addEmp">+ 新增員工</el-button>
-    <el-button type="danger" @click="">- 批量刪除</el-button>
+    <el-button type="danger" @click="deleteByIds">- 批量刪除</el-button>
   </div>
 
 
-  <!-- 表格 -->
+  <!--數據展示表格 -->
   <div class="container">
-    <el-table :data="empList" border style="width: 100%">
+    <el-table :data="empList" border style="width: 100%" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column prop="name" label="姓名" width="120" align="center" />
       <el-table-column label="性別" width="120" align="center">
@@ -327,7 +404,7 @@ const edit = async (id) => {
             </el-icon>
             編輯
           </el-button>
-          <el-button type="danger" size="small" @click=""><el-icon>
+          <el-button type="danger" size="small" @click="deleteById(scope.row.id)"><el-icon>
               <Delete />
             </el-icon>
             刪除
