@@ -53,7 +53,7 @@ onMounted(() => {
   queryAllDepts();  // 查詢所有部門
 })
 
-// 生命週期函數 查詢所有部門
+// 查詢所有部門
 const queryAllDepts = async () => {
   const result = await queryAllDeptApi();
   if (result.code) {

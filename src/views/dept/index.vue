@@ -26,7 +26,7 @@ const dialogFormVisible = ref(false);
 const dept = ref({ name: '' });
 const formTitle = ref('');
 
-// 新增部門
+// 跳出新增部門表單
 const addDept = () => {
     dialogFormVisible.value = true;
     formTitle.value = '新增部門';
