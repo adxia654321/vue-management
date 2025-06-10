@@ -4,18 +4,18 @@ import { ElMessage } from 'element-plus'
 import { loginApi } from '@/api/login';
 import { useRouter } from 'vue-router';
 
-const loginForm = ref({username:'', password:''})
+const loginForm = ref({ username:'', password:'' })
 
 
 const router = useRouter();
 
 // 登入操作
 const handleLogin = async () => {
-  
   const result = await loginApi(loginForm.value);
   if(result.code){
     ElMessage.success('登入成功');
-
+    // 儲存當前登入員工的資訊
+    localStorage.setItem('loginUser', JSON.stringify(result.data));
     // 跳轉頁面 - 首頁
     router.push('/index');
   }else{
@@ -33,7 +33,7 @@ const handleReset = () => {
 
 <template>
   <div class="login-container">
-    <el-form class="login-card">
+    <el-form class="login-form">
       <div class="title">登入喔喔喔</div>
 
         <el-form-item label="帳號" class="form-item">
@@ -68,7 +68,7 @@ const handleReset = () => {
   background-size: cover;
 }
 
-.login-card {
+.login-form {
   width: 400px;
   padding: 15px 30px 30px 30px;
   /* 上15px，右30px，下30px，左30px */
