@@ -1,15 +1,51 @@
 <script setup>
 import { Avatar, Document, Histogram, HomeFilled, InfoFilled, Menu, Promotion, Share, Tools } from '@element-plus/icons-vue';
-
 import { ref, onMounted } from 'vue'
+import { ElMessage, ElMessageBox } from "element-plus";
+import { useRouter } from "vue-router";
 
 const isRouterViewVisible = ref(false)
 
+// 當前登入的員工 
+const loginName = ref('');
+
+const router = useRouter();
+
 onMounted(() => {
+
+  const loginUser = JSON.parse(localStorage.getItem('loginUser'));
+  if (loginUser && loginUser.name) {
+    loginName.value = loginUser.name;
+  }
+
   setTimeout(() => {
     isRouterViewVisible.value = true
   }, 50) // 50ms 就夠，太長會延遲畫面顯示
+
 })
+
+// 登出
+const logout = () => {
+  // 彈出確認框
+  ElMessageBox.confirm(
+    '你確定要登出嗎?',
+    '提示',
+    {
+      confirmButtonText: '確定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }
+  )
+    .then(async () => {
+      ElMessage.success('登出成功');
+      localStorage.removeItem('loginUser');
+      // 跳轉頁面
+      router.push('/login');
+    })
+    .catch(() => {
+      ElMessage.info('取消登出')
+    })
+}
 
 
 </script>
@@ -17,18 +53,20 @@ onMounted(() => {
 <template>
   <div class="common-layout">
     <el-container>
+
+      <!-- header -->
       <el-header class="header">
         <span class="title">嚕嚕課程管理系統</span>
         <span class="right_tool">
-          <a href="">
+          <!-- <a href="">
             <el-icon>
               <EditPen />
             </el-icon> 修改密碼 &nbsp;&nbsp;&nbsp;&nbsp;|
-          </a>
-          <a href="">
+          </a> -->
+          <a href="javascript:void(0)" @click="logout">
             <el-icon>
               <SwitchButton />
-            </el-icon> 登出
+            </el-icon> 登出 【 {{ loginName }} 】
           </a>
         </span>
       </el-header>
@@ -132,14 +170,14 @@ body,
 }
 
 /* 1. 第一层 el-container（包 header + 第二层）要撑满 100% */
-.common-layout > .el-container {
+.common-layout>.el-container {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
 /* 2. 第二层 el-container（包 aside + main），高度 = 100% - header(60px) */
-.common-layout > .el-container > .el-container {
+.common-layout>.el-container>.el-container {
   display: flex;
   /* 如果 el-header 的实际高度不是 60px，请改成对应数值 */
   height: calc(100% - 60px);
@@ -176,7 +214,7 @@ body,
     #00d072,
     #a8eb12 */
 
-  /* ); */ 
+  /* ); */
   /* Element Plus el-header 默认高度是 60px，这与背景图匹配 */
   display: flex;
   justify-content: space-between;
@@ -219,17 +257,20 @@ body,
 }
 
 /* 路由切換動畫效果：淡入淡出 + 左右輕微位移 */
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.5s ease, transform 0.5s ease;
 }
-.fade-enter-from, .fade-leave-to {
+
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
   transform: translateX(10px);
 }
-.fade-enter-to, .fade-leave-from {
+
+.fade-enter-to,
+.fade-leave-from {
   opacity: 1;
   transform: translateX(0);
 }
-
-
 </style>

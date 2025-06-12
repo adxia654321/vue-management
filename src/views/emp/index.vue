@@ -5,6 +5,25 @@ import { queryAllApi as queryAllDeptApi } from "@/api/dept";
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 
+// token
+const token = ref('');
+
+
+// 生命週期函數 一載入就執行
+onMounted(() => {
+  search();   // 查詢所有員工
+  queryAllDepts();  // 查詢所有部門
+  getToken();
+})
+
+// 獲取token
+const getToken = () => {
+  const loginUser = JSON.parse(localStorage.getItem('loginUser'));
+  if(loginUser && loginUser.token){
+    token.value = loginUser.token;
+  }
+  
+}
 
 
 // 職位列表數據
@@ -48,11 +67,6 @@ watch(() => searchEmp.value.date, (newVal, oldVal) => {
   }
 })
 
-// 生命週期函數
-onMounted(() => {
-  search();   // 查詢所有員工
-  queryAllDepts();  // 查詢所有部門
-})
 
 // 查詢所有部門
 const queryAllDepts = async () => {
@@ -323,6 +337,9 @@ const deleteByIds = () => {
     })
 }
 
+
+
+
 </script>
 
 
@@ -502,8 +519,12 @@ const deleteByIds = () => {
       <el-row :gutter="20">
         <el-col :span="24">
           <el-form-item label="頭像">
-            <el-upload class="avatar-uploader" action="/api/upload" :show-file-list="false"
-              :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+            <el-upload class="avatar-uploader" action="/api/upload" 
+              :show-file-list="false"
+              :on-success="handleAvatarSuccess" 
+              :before-upload="beforeAvatarUpload"
+              :headers="{'token':token}"
+              >
               <img v-if="employee.image" :src="employee.image" class="avatar" />
               <el-icon v-else class="avatar-uploader-icon">
                 <Plus />
