@@ -17,8 +17,8 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/index', // ✅ 加這行：預設轉到 /index
-    },
+      redirect: '/login', 
+    }, 
     {
       path: '/',
       component: LayoutView,
