@@ -24,3 +24,8 @@ export const updateApi = (emp) => {
 
 // 刪除
 export const deleteApi = (ids) => request.delete(`/emps?ids=${ids}`);
+
+// 查詢所有員工
+export const queryAllEmpApi = () => {
+    return request.get('/emps/list');
+} 
