@@ -76,7 +76,7 @@ const save = async () => {
 const rules = ref({
   name: [
     { required: true, message: '班級名稱必須填寫 ! ', trigger: 'blur' },
-    { min: 2, max: 10, message: '班級名稱需在2-10字之間', trigger: 'blur' },
+    { min: 2, max: 15, message: '班級名稱需在2-15字之間', trigger: 'blur' },
   ]
 })
 

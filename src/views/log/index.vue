@@ -13,11 +13,18 @@ const pagedData = computed(() => {
   return allData.value.slice(start, end)
 })
 
+// 取得日誌資料
 const fetchLogs = async () => {
   const res = await queryLogApi()
   if (res.code === 1) {
     allData.value = res.data
   }
+}
+
+// 每頁筆數改變時重設頁碼
+const handleSizeChange = (newSize) => {
+  pageSize.value = newSize
+  currentPage.value = 1 // 避免新頁數超出範圍
 }
 
 onMounted(() => {
@@ -39,10 +46,12 @@ onMounted(() => {
   <el-pagination
     v-model:current-page="currentPage"
     :page-size="pageSize"
+    :page-sizes="[5, 10, 20, 50]"
     :total="allData.length"
-    layout="total, prev, pager, next"
+    layout="total, sizes, prev, pager, next"
     background
     class="mt-4"
+    @size-change="handleSizeChange"
   />
 </template>
 

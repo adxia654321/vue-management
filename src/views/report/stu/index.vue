@@ -66,7 +66,12 @@ const loadStuCountData = async () => {
         tooltip: {},
         xAxis: {
           type: 'category',
-          data: names
+          data: names,
+          axisLabel: {
+            interval: 0,
+           
+            formatter: (value) => value.length > 10 ? value.slice(0, 10) + '...' : value
+          }
         },
         yAxis: { type: 'value' },
         series: [
@@ -77,6 +82,7 @@ const loadStuCountData = async () => {
           }
         ]
       }
+
       barChart.setOption(option)
     } else {
       console.error('班級人數統計 API 回傳錯誤:', res.msg)
@@ -122,7 +128,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <h1>學生數據統計</h1> 
+  <h1>學生數據統計</h1>
   <div class="chart-container">
     <!-- 左：長條圖 -->
     <div ref="barChartRef" class="chart-box"></div>
