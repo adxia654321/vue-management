@@ -105,8 +105,8 @@ const handleReset = () => {
   justify-content: flex-start;
   /* 按鈕靠左排列 */
   margin-top: 30px;
-  margin-left: 60px;
-  /* 整組往右移40px */
+  margin-left: 81px;
+ 
   gap: 3px;
   /* 按鈕間距 */
 }
