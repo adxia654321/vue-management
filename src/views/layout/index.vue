@@ -14,8 +14,8 @@ const router = useRouter();
 onMounted(() => {
 
   const loginUser = JSON.parse(localStorage.getItem('loginUser'));
-  if (loginUser && loginUser.name) {
-    loginName.value = loginUser.name;
+  if (loginUser && loginUser.username) {
+    loginName.value = loginUser.username;
   }
 
   setTimeout(() => {
